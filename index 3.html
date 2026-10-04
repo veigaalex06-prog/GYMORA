@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>GYMORA V2</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#070809;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
+.app{max-width:430px;min-height:100vh;margin:auto;padding:20px 17px 96px;background:linear-gradient(180deg,#0d0f12,#070809)}
+.top{display:flex;justify-content:space-between;align-items:center}.logo{font-size:27px;font-weight:950;letter-spacing:2px}.avatar{width:40px;height:40px;border-radius:50%;background:#1a1d22;display:grid;place-items:center;font-weight:800}
+.screen{display:none}.screen.active{display:block}.muted{color:#858b94}.hello{margin-top:28px;font-size:14px}.title{font-size:30px;font-weight:900;margin:6px 0 20px}
+.hero{background:linear-gradient(135deg,#181c21,#101216);border:1px solid #272b31;border-radius:24px;padding:20px;position:relative}.tag{display:inline-block;color:#baff55;background:#26351a;padding:7px 10px;border-radius:10px;font-size:11px;font-weight:900}.hero h2{font-size:25px;margin:13px 0 5px}.hero p{margin:0 0 18px;color:#999fa8}
+button{border:0;color:#080a0b;background:#b8ff43;font-weight:850;border-radius:13px;padding:13px 17px;font-size:14px;cursor:pointer}.darkbtn{background:#191d22;color:#f5f5f5;border:1px solid #2b3037}.wide{width:100%;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:17px 0}.stat{background:#14171b;border:1px solid #23272d;border-radius:17px;padding:14px 9px}.num{font-size:20px;font-weight:900}.label{font-size:10px;color:#858b94;margin-top:5px}
+.section{display:flex;justify-content:space-between;align-items:center;margin:24px 0 11px}.section h3{margin:0;font-size:18px}.section button{padding:5px 0;background:none;color:#b8ff43;font-size:12px}
+.card{background:#121519;border:1px solid #24282e;border-radius:18px;padding:15px;margin-bottom:10px}.row{display:flex;justify-content:space-between;align-items:center}.exname{font-weight:850}.small{font-size:12px;color:#8d949d;margin-top:5px}.green{color:#b8ff43;font-weight:800}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:78px;background:rgba(14,16,19,.97);border-top:1px solid #25292f;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px 10px;backdrop-filter:blur(15px);z-index:20}.nav button{background:none;color:#737983;padding:4px;font-size:10px}.nav button.active{color:#b8ff43}.icon{display:block;font-size:20px;margin-bottom:3px}
+input,select{width:100%;background:#0a0c0f;border:1px solid #2a2f36;color:#fff;padding:13px;border-radius:12px;margin-top:7px;font-size:15px}label{font-size:12px;color:#8d949d;display:block;margin-top:10px}
+.exercise-btn{width:100%;background:#121519;color:#fff;border:1px solid #24282e;text-align:left;margin-bottom:9px}.exercise-btn:active{transform:scale(.99)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:30;display:none;align-items:end}.modal.open{display:flex}.sheet{width:min(430px,100%);margin:auto;background:#121519;border:1px solid #292e35;border-radius:25px 25px 0 0;padding:20px 18px 28px}.sheet h2{margin:0 0 15px}
+.timer{text-align:center;padding:25px 10px}.time{font-size:58px;font-weight:950;letter-spacing:2px}.done{color:#b8ff43;font-size:13px;font-weight:800}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:92px;background:#b8ff43;color:#080a0b;padding:11px 15px;border-radius:12px;font-weight:850;font-size:13px;opacity:0;transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.barwrap{height:12px;background:#20242a;border-radius:20px;overflow:hidden;margin-top:12px}.bar{height:100%;width:72%;background:#b8ff43}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="logo">GYMORA</div><div class="avatar" onclick="show('profile')">A</div></header>
+
+<section id="home" class="screen active">
+<div class="hello muted">Good morning, Alex</div><div class="title">Ready to train?</div>
+<div class="hero"><span class="tag">TODAY</span><h2>Push Day</h2><p>Chest · Shoulders · Triceps</p><button onclick="show('workout')">Start Workout →</button></div>
+<div class="stats"><div class="stat"><div class="num" id="workoutCount">12</div><div class="label">WORKOUTS</div></div><div class="stat"><div class="num">7 🔥</div><div class="label">STREAK</div></div><div class="stat"><div class="num" id="volumeStat">8.4k</div><div class="label">VOLUME KG</div></div></div>
+<div class="section"><h3>Last Workout</h3><button onclick="show('progress')">View all</button></div>
+<div class="card"><div class="row"><div><b>Push Day</b><div class="small">6 exercises · 52 min</div></div><span class="green">+2 PRs</span></div></div>
+<div class="section"><h3>Weekly Goal</h3><span class="green">3 / 4</span></div>
+<div class="card"><div class="small">Training goal</div><div class="barwrap"><div class="bar"></div></div></div>
+</section>
+
+<section id="workout" class="screen">
+<button class="darkbtn" onclick="show('home')">← Home</button><div class="title">Push Day</div>
+<div class="card"><div class="row"><div><b>Today's Workout</b><div class="small">6 exercises · 55 min</div></div><span class="green" id="completedLabel">0%</span></div></div>
+<div id="exerciseList"></div>
+<button class="wide" onclick="openAdd()">+ Add Exercise</button>
+<button class="wide darkbtn" onclick="finishWorkout()">Finish Workout</button>
+</section>
+
+<section id="exercise" class="screen">
+<button class="darkbtn" onclick="show('workout')">← Workout</button><div class="title" id="exerciseTitle">Bench Press</div>
+<div class="card"><div class="small">Last best</div><div style="font-size:29px;font-weight:950;margin:4px 0" id="lastBest">80 kg × 8</div><span class="green">Personal Record</span></div>
+<div class="card"><label>Weight (kg)</label><input id="kg" type="number" value="80"><label>Reps</label><input id="reps" type="number" value="8"><button class="wide" onclick="saveSet()">Save Set ✓</button></div>
+<div class="section"><h3>Today's Sets</h3><button onclick="startTimer(120)">Rest Timer</button></div>
+<div id="setList"></div>
+</section>
+
+<section id="plans" class="screen">
+<div class="title">Plans</div>
+<div class="card"><div class="row"><div><b>Push / Pull / Legs</b><div class="small">6 days · 18 exercises</div></div><span class="green">ACTIVE</span></div></div>
+<div class="card"><div class="row"><div><b>Upper / Lower</b><div class="small">4 days · 16 exercises</div></div><button class="darkbtn" onclick="toast('Plan selected')">Select</button></div></div>
+<button class="wide" onclick="toast('Plan creator coming next')">+ Create New Plan</button>
+</section>
+
+<section id="progress" class="screen">
+<div class="title">Progress</div>
+<div class="card"><div class="small">Total training volume</div><div style="font-size:30px;font-weight:950;margin-top:4px" id="volumeBig">8,420 kg</div><span class="green">+14.8% this month</span><div style="height:100px;display:flex;align-items:end;gap:8px;margin-top:14px"><div style="height:35%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:48%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:44%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:65%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:57%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:78%;flex:1;background:#b8ff43;border-radius:6px"></div><div style="height:92%;flex:1;background:#b8ff43;border-radius:6px"></div></div></div>
+<div class="card"><b>Personal Records</b><div class="row" style="margin-top:15px"><span>Bench Press</span><b>80 × 8</b></div><div class="row" style="margin-top:14px"><span>Squat</span><b>110 × 6</b></div></div>
+</section>
+
+<section id="profile" class="screen">
+<div class="title">Profile</div><div class="card"><div style="font-size:21px;font-weight:900">Alex</div><div class="small">GYMORA member</div></div>
+<div class="card"><label>Name</label><input value="Alex" id="nameInput"><label>Goal</label><select><option>Build Muscle</option><option>Lose Fat</option><option>Get Stronger</option></select><button class="wide" onclick="toast('Profile saved ✓')">Save Profile</button></div>
+</section>
+</div>
+
+<div id="addModal" class="modal"><div class="sheet"><h2>Add Exercise</h2><label>Exercise</label><select id="newExercise"><option>Bench Press</option><option>Incline Dumbbell Press</option><option>Shoulder Press</option><option>Lateral Raises</option><option>Triceps Pushdown</option><option>Cable Fly</option></select><button class="wide" onclick="addExercise()">Add to Workout</button><button class="wide darkbtn" onclick="closeAdd()">Cancel</button></div></div>
+
+<div id="timerModal" class="modal"><div class="sheet timer"><div class="muted">REST TIMER</div><div class="time" id="time">02:00</div><button onclick="stopTimer()">Stop</button></div></div>
+<div id="toast" class="toast"></div>
+
+<nav class="nav">
+<button class="active" onclick="show('home',this)"><span class="icon">⌂</span>Home</button>
+<button onclick="show('workout',this)"><span class="icon">🏋</span>Workout</button>
+<button onclick="show('plans',this)"><span class="icon">▣</span>Plans</button>
+<button onclick="show('progress',this)"><span class="icon">↗</span>Progress</button>
+<button onclick="show('profile',this)"><span class="icon">●</span>Profile</button>
+</nav>
+
+<script>
+let currentExercise='Bench Press', sets=[], volume=8420, workouts=12, timerInt=null;
+let exercises=['Bench Press','Incline Dumbbell Press','Shoulder Press','Lateral Raises','Triceps Pushdown','Cable Fly'];
+
+function show(id,btn){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');else{let map={home:0,workout:1,plans:2,progress:3,profile:4};if(map[id]!==undefined)document.querySelectorAll('.nav button')[map[id]].classList.add('active')}window.scrollTo(0,0);if(id==='workout')renderExercises()}
+
+function renderExercises(){document.getElementById('exerciseList').innerHTML=exercises.map((e,i)=>`<button class="exercise-btn" onclick="openExercise('${e.replace(/'/g,"\\'")}')"><div class="row"><div><b>${e}</b><div class="small">3–4 sets · 8–12 reps</div></div><span>›</span></div></button>`).join('')}
+
+function openExercise(e){currentExercise=e;document.getElementById('exerciseTitle').textContent=e;document.getElementById('lastBest').textContent=e==='Bench Press'?'80 kg × 8':'—';document.getElementById('setList').innerHTML='<div class="card"><div class="small">No sets logged yet.</div></div>';show('exercise')}
+
+function saveSet(){let kg=Number(document.getElementById('kg').value), reps=Number(document.getElementById('reps').value);if(!kg||!reps)return toast('Enter weight and reps');sets.push({e:currentExercise,kg,reps});volume+=kg*reps;document.getElementById('setList').innerHTML=sets.filter(s=>s.e===currentExercise).map((s,i)=>`<div class="card"><div class="row"><b>Set ${i+1}</b><b>${s.kg} kg × ${s.reps}</b></div><div class="small done">Saved ✓</div></div>`).join('');document.getElementById('volumeBig').textContent=volume.toLocaleString()+' kg';document.getElementById('volumeStat').textContent=(volume/1000).toFixed(1)+'k';toast('Set saved ✓')}
+
+function openAdd(){document.getElementById('addModal').classList.add('open')}
+function closeAdd(){document.getElementById('addModal').classList.remove('open')}
+function addExercise(){let e=document.getElementById('newExercise').value;if(!exercises.includes(e))exercises.push(e);closeAdd();renderExercises();toast(e+' added ✓')}
+function finishWorkout(){workouts++;document.getElementById('workoutCount').textContent=workouts;document.getElementById('completedLabel').textContent='100%';toast('Workout completed 🔥');show('home')}
+function startTimer(sec){document.getElementById('timerModal').classList.add('open');let end=Date.now()+sec*1000;clearInterval(timerInt);function tick(){let left=Math.max(0,Math.ceil((end-Date.now())/1000));document.getElementById('time').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');if(left<=0){clearInterval(timerInt);toast('Rest finished 🔥')}}tick();timerInt=setInterval(tick,250)}
+function stopTimer(){clearInterval(timerInt);document.getElementById('timerModal').classList.remove('open')}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+renderExercises();
+</script>
+</body>
+</html>
